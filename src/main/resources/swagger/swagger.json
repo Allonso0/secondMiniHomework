@@ -204,7 +204,12 @@
           "id": { "type": "string" },
           "species": { "type": "string" },
           "name": { "type": "string" },
-          "birthDate": { "type": "string", "format": "date" },
+          "birthDate": {
+            "type": "string",
+            "format": "date",
+            "example": "31-12-2023",
+            "description": "Дата в формате DD-MM-YYYY"
+          },
           "gender": { "type": "string", "enum": ["MALE", "FEMALE"] },
           "favouriteFoodType": { "type": "string", "enum": ["GRASS", "MEAT", "INSECTS", "FRUITS", "VEGETABLES"] },
           "status": { "type": "string", "enum": ["HEALTHY", "SICK"] },
@@ -227,7 +232,12 @@
         "properties": {
           "id": { "type": "string" },
           "animalId": { "type": "string" },
-          "feedingTime": { "type": "string", "format": "date-time" },
+          "feedingTime": {
+            "type": "string",
+            "format": "time",
+            "example": "14:30:45.123",
+            "description": "Время в формате HH:mm:ss.SSS"
+          },
           "foodType": { "type": "string", "enum": ["GRASS", "MEAT", "INSECTS", "FRUITS", "VEGETABLES"] },
           "isCompleted": { "type": "boolean" }
         }
