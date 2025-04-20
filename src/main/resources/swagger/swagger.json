@@ -1,0 +1,254 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Zoo Management API",
+    "version": "1.0.0",
+    "description": "API для управления зоопарком: животные, вольеры, кормление"
+  },
+  "paths": {
+    "/enclosure": {
+      "get": {
+        "summary": "Получить список всех вольеров",
+        "responses": {
+          "200": {
+            "description": "Успешно",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Enclosure" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Добавить новый вольер",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/EnclosureRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Вольер добавлен" }
+        }
+      }
+    },
+    "/enclosure/{id}": {
+      "delete": {
+        "summary": "Удалить вольер по ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Вольер удалён" },
+          "404": { "description": "Не найден" }
+        }
+      }
+    },
+    "/animals": {
+      "get": {
+        "summary": "Получить список всех животных",
+        "responses": {
+          "200": {
+            "description": "Успешно",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Animal" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Добавить новое животное",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AnimalRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Животное добавлено" }
+        }
+      }
+    },
+    "/animals/{id}": {
+      "delete": {
+        "summary": "Удалить животное по ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Животное удалено" },
+          "404": { "description": "Не найдено" }
+        }
+      }
+    },
+    "/animals/{id}/move": {
+      "post": {
+        "summary": "Переместить животное в другой вольер",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          },
+          {
+            "name": "endEnclosureId",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Животное перемещено"
+          },
+          "400": { "description": "Некорректные параметры" }
+        }
+      }
+    },
+    "/feeding/schedules": {
+      "get": {
+        "summary": "Получить расписание кормлений",
+        "responses": {
+          "200": {
+            "description": "Успешно",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/FeedingSchedule" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Добавить новое кормление в расписание",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/FeedingScheduleRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Расписание добавлено" }
+        }
+      }
+    },
+    "/statistics": {
+      "get": {
+        "summary": "Получить статистику зоопарка",
+        "responses": {
+          "200": {
+            "description": "Успешно",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ZooStatistics" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Enclosure": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "type": { "type": "string" },
+          "size": { "type": "number" },
+          "maxCapacity": { "type": "integer" },
+          "animals": { "type": "array", "items": { "type": "string" } }
+        }
+      },
+      "EnclosureRequest": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string" },
+          "size": { "type": "number" },
+          "maxCapacity": { "type": "integer" }
+        },
+        "required": ["type", "size", "maxCapacity"]
+      },
+      "Animal": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "species": { "type": "string" },
+          "name": { "type": "string" },
+          "birthDate": { "type": "string", "format": "date" },
+          "gender": { "type": "string", "enum": ["MALE", "FEMALE"] },
+          "favouriteFoodType": { "type": "string", "enum": ["GRASS", "MEAT", "INSECTS", "FRUITS", "VEGETABLES"] },
+          "status": { "type": "string", "enum": ["HEALTHY", "SICK"] },
+          "enclosureID": { "type": "string" }
+        }
+      },
+      "AnimalRequest": {
+        "type": "object",
+        "properties": {
+          "species": { "type": "string" },
+          "name": { "type": "string" },
+          "birthDate": { "type": "string", "format": "date" },
+          "gender": { "type": "string", "enum": ["MALE", "FEMALE"] },
+          "favouriteFoodType": { "type": "string", "enum": ["GRASS", "MEAT", "INSECTS", "FRUITS", "VEGETABLES"] }
+        },
+        "required": ["species", "name", "birthDate", "gender", "favouriteFoodType"]
+      },
+      "FeedingSchedule": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "animalId": { "type": "string" },
+          "feedingTime": { "type": "string", "format": "date-time" },
+          "foodType": { "type": "string", "enum": ["GRASS", "MEAT", "INSECTS", "FRUITS", "VEGETABLES"] },
+          "isCompleted": { "type": "boolean" }
+        }
+      },
+      "FeedingScheduleRequest": {
+        "type": "object",
+        "properties": {
+          "animalId": { "type": "string" },
+          "feedingTime": { "type": "string", "format": "date-time" },
+          "foodType": { "type": "string", "enum": ["GRASS", "MEAT", "INSECTS", "FRUITS", "VEGETABLES"] }
+        },
+        "required": ["animalId", "feedingTime", "foodType"]
+      },
+      "ZooStatistics": {
+        "type": "object",
+        "properties": {
+          "totalAnimals": { "type": "integer" },
+          "totalEnclosures": { "type": "integer" },
+          "animalsPerEnclosure": { "type": "object" }
+        }
+      }
+    }
+  }
+}
